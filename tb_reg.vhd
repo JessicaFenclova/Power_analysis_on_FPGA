@@ -15,7 +15,8 @@ component reg is
      i_data      : in std_logic;  --data in is serial
      o_data      : out std_logic_vector(7 downto 0); --data out is parallel
      o_counter   : out std_logic_vector(3 downto 0);
-     o_start_bit : out std_logic
+     o_start_bit : out std_logic;
+     o_stop_bit : out std_logic
   
     );
  end component;
@@ -26,6 +27,7 @@ component reg is
      signal dataout : std_logic_vector(7 downto 0);
      signal counter : std_logic_vector(3 downto 0);
      signal startb  : std_logic;
+     signal stopb  : std_logic;
      signal e:std_logic;
      
      
@@ -38,7 +40,8 @@ component reg is
       i_data=>datain,
       o_data=>dataout,
       o_counter=>counter,
-      o_start_bit=>startb
+      o_start_bit=>startb,
+      o_stop_bit=>stopb
     
      );
  process 
