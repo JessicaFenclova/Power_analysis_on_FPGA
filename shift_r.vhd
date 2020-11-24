@@ -28,8 +28,17 @@ use ieee.numeric_std.all;
          elsif i_clock_sh'event and (i_clock_sh='1') then
             if (i_en_sh='1') then
               in_d <= i_data_sh;
-              o_data_sh <= in_d (counter);
-              counter <= (counter + 1);
+              if (counter=0) then
+                o_data_sh <='0';  -- start bit
+                counter <= (counter + 1);
+              elsif (counter>0) and (counter < 9) then
+                o_data_sh <= in_d (counter);
+                counter <= (counter + 1);
+              elsif (counter=9) then
+                o_data_sh <='1';  -- stop bit
+                counter<=0;
+              end if;
+              
             else
                 o_data_sh <= '1';
                 counter <= 0;             
