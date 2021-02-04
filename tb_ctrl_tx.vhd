@@ -17,7 +17,7 @@ architecture sim of tb_ctrl_tx is
      i_data_tx  : in std_logic_vector(7 downto 0);
      o_wr_ack   : out std_logic;
      o_start_tx : out std_logic;
-     o_stop_tx  : out std_logic;
+     --o_stop_tx  : out std_logic;
      o_data_tx  : out std_logic  
     );
  end component;
@@ -28,11 +28,11 @@ architecture sim of tb_ctrl_tx is
      signal wr_req  : std_logic;
      signal wr_ack  : std_logic;
      signal start   : std_logic;
-     signal stop    : std_logic;
+     --signal stop    : std_logic;
      signal in_data : std_logic_vector(7 downto 0);
      signal o_data  : std_logic;
      signal e       : std_logic;
-     signal s       : std_logic:='1';
+     --signal s       : std_logic:='1';
      
      
  begin
@@ -46,7 +46,7 @@ architecture sim of tb_ctrl_tx is
       i_data_tx=>in_data,
       o_wr_ack=>wr_ack,
       o_start_tx=>start,
-      o_stop_tx=>stop,
+      --o_stop_tx=>stop,
       o_data_tx => o_data          
      );
      
@@ -61,8 +61,13 @@ architecture sim of tb_ctrl_tx is
  process 
    begin
       wr_req<='0';
-      wait for 120 ns;
-       s <='0';
+      wait for 300 ns;
+      --s <='0';
+      wr_req<= '1';
+      wait for 40  ns;
+      wr_req<='0';
+      wait for 1120 ns;
+      --s <='0';
       wr_req<= '1';
       wait for 40  ns;
       wr_req<='0';
@@ -85,9 +90,9 @@ architecture sim of tb_ctrl_tx is
    begin
      --wait until start='1'; -- wait until or wait on  
      --if(start='1') then
-     if s ='1' then
-     wait for 100 ns;
-     end if; 
+     --if s ='1' then
+     --wait for 100 ns;
+     --end if; 
       clk2<='0';
       wait for 80 ns;
       clk2<='1';
@@ -104,12 +109,14 @@ architecture sim of tb_ctrl_tx is
    begin
  
       e <= '0';
-      
-      in_data <= "11001100";  
-      wait for 300 ns;
       in_data <= "11111111";  
       wait for 300 ns;
-      wait for 600 ns; 
+      in_data <= "11001100";  
+      wait for 300 ns;
+      --in_data <= "11111111";  
+      --wait for 600 ns;
+      in_data <= "11111100";
+      wait for 1800 ns; 
     
       e <= '1';
       wait;
