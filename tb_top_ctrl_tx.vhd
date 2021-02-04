@@ -70,7 +70,14 @@ architecture sim of tb_top_ctrl_tx is
       wr_req<= '1';
       wait for 60 ns;
       wr_req<='0';
-      wait for 500 ns;
+      wait for 2200 ns;
+      wr_req<= '1';
+      wait for 60 ns;
+      wr_req<='0';
+      wait for 20 ns;
+      wr_req<= '1';
+      wait for 60 ns;
+      wr_req<='0';
 
       --if e = '1' then 
       wait;
@@ -85,6 +92,12 @@ architecture sim of tb_top_ctrl_tx is
       e <= '0';
       i_data <= "11001100";   --begin
       wait for 140 ns;
+      i_data <= "11001100";  
+      wait for 300 ns;
+      --in_data <= "11111111";  
+      --wait for 600 ns;
+      i_data <= "11111100";
+      wait for 800 ns; 
       i_data <= "11111111";
     
       wait for 5 ms; 
