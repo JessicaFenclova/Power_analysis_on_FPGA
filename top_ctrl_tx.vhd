@@ -27,7 +27,7 @@ architecture rtl of top_ctrl_tx is
           i_data_tx  : in std_logic_vector(7 downto 0);
           o_wr_ack   : out std_logic;
           o_start_tx : out std_logic;
-          o_stop_tx  : out std_logic;
+          --o_stop_tx  : out std_logic;
           o_data_tx  : out std_logic
           );
  end component;
@@ -43,14 +43,14 @@ architecture rtl of top_ctrl_tx is
          i_clkin     : in std_logic;
          i_res       : in std_logic;
          i_start_clk : in std_logic;
-         i_stop_clk  : in std_logic;
+         --i_stop_clk  : in std_logic;
          o_clkout    : out std_logic
        );
  end component;
  
     signal datatx   : std_logic :='1';
     signal start    : std_logic:='0';
-    signal stop     : std_logic:='0';
+    --signal stop     : std_logic:='0';
     signal clk2     : std_logic;
   --constant prescaler : integer := 16; -- for rx   
      
@@ -76,7 +76,7 @@ architecture rtl of top_ctrl_tx is
      i_data_tx  => in_data,
      o_wr_ack   => out_wr_ack,
      o_start_tx => start,
-     o_stop_tx => stop,
+     --o_stop_tx => stop,
      o_data_tx  => datatx
     );
     
@@ -85,7 +85,7 @@ architecture rtl of top_ctrl_tx is
        i_clkin     => in_clock,
        i_res       =>in_reset,
        i_start_clk => start,
-       i_stop_clk  => stop,
+       --i_stop_clk  => stop,
        o_clkout   => clk2    
      );
      
