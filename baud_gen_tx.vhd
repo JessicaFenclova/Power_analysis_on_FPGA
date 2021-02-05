@@ -21,7 +21,7 @@ end baud_gen_tx;
 
 architecture rtl of baud_gen_tx is
         
-        signal start_en : std_logic;
+        --signal start_en : std_logic;
         signal count : integer;
         constant prescaler : integer := (500000/(baudrate));
         
@@ -29,27 +29,39 @@ begin
     pro_1 : process (i_clkin, i_res)
     begin
       if i_res = '0' then
-         start_en <= '0';
+         --start_en <= '0';
          o_clkout <= '0';
          count<=1;
          
       elsif rising_edge(i_clkin) then
-        if (i_start_clk='1') then
-           start_en <='1';
-        elsif (i_start_clk='0') then
-           start_en<='0';
-        end if;
-        if (start_en='1') then
+         if (i_start_clk='1') then
             count <= count + 1;     
-        end if;
-        if count = prescaler  then    
+         end if;
+         if count = prescaler  then    
               o_clkout <='1';
               --temp <= not temp;   
-           elsif count = prescaler+1 then 
+         elsif count = prescaler+1 then 
               count <= 1;
               o_clkout <= '0';
               --temp <= not temp;                
-           end if; 
+         end if; 
+             
+        
+           --start_en <='1';
+        --elsif (i_start_clk='0') then
+           --start_en<='0';
+        --end if;
+        --if (start_en='1') then
+            --count <= count + 1;     
+        --end if;
+        --if count = prescaler  then    
+              --o_clkout <='1';
+              --temp <= not temp;   
+           --elsif count = prescaler+1 then 
+              --count <= 1;
+              --o_clkout <= '0';
+              --temp <= not temp;                
+           --end if; 
              
       end if;
       
