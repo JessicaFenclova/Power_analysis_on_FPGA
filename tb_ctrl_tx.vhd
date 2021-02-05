@@ -16,7 +16,7 @@ architecture sim of tb_ctrl_tx is
      i_wr_req   : in std_logic;
      i_data_tx  : in std_logic_vector(7 downto 0);
      o_wr_ack   : out std_logic;
-     o_start_tx : out std_logic;
+     --o_start_tx : out std_logic;
      --o_stop_tx  : out std_logic;
      o_data_tx  : out std_logic  
     );
@@ -27,7 +27,7 @@ architecture sim of tb_ctrl_tx is
      signal reset   : std_logic;
      signal wr_req  : std_logic;
      signal wr_ack  : std_logic;
-     signal start   : std_logic;
+     --signal start   : std_logic;
      --signal stop    : std_logic;
      signal in_data : std_logic_vector(7 downto 0);
      signal o_data  : std_logic;
@@ -45,7 +45,7 @@ architecture sim of tb_ctrl_tx is
       i_wr_req=>wr_req,
       i_data_tx=>in_data,
       o_wr_ack=>wr_ack,
-      o_start_tx=>start,
+      --o_start_tx=>start,
       --o_stop_tx=>stop,
       o_data_tx => o_data          
      );
