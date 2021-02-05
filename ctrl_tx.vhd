@@ -49,6 +49,7 @@ use ieee.numeric_std.all;
                 o_wr_ack <='0'; -- 1
                 --o_start_tx<='0';
                 proc_data<='0';
+                o_data_tx <= '1'; --added so that when nothing is being sent the signal is in a 1
                 --else
                 --stop<='0';
                 --o_stop_tx<='0';
