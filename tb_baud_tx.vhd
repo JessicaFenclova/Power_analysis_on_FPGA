@@ -41,6 +41,10 @@ begin
     reset<='0';
     wait for 100 ns;
     reset<= '1';
+    wait for 1500 ns;
+    reset<='0';
+    wait for 100 ns;
+    reset<= '1';
     wait;
 end process;
 
