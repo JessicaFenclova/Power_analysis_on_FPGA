@@ -43,7 +43,21 @@ use ieee.numeric_std.all;
            count <=0;
         elsif i_clk1'event and (i_clk1='1') then
            --if (i_start='1') then
-              
+             if (i_start='1') and (start_en='0') then
+                     --if (i_data='0') then  -- maybe not necessary
+                       --o_error<='0';
+                       start_en <='1';
+                       count <= count+1;
+                       o_rd_req <= '1';
+                     --else
+                     --o_error<='1';
+                     --end if;                    
+                  --elsif (i_stop='1') then -- maybe just use count=9 to tell that stop bit has been recieved and just get rid of this signal i_stop
+                      --if (i_rd_ack='0') then
+                         --o_rd_req <= '1';
+                      --end if; 
+                      --start_en <='0';
+              end if; 
               -- 
               --rd req rd ack
               --
@@ -67,22 +81,7 @@ use ieee.numeric_std.all;
             else
                   o_data<= "11111111"; -- added this else
             end if;
-            if (i_start='1') and (start_en='0') then
-                     --if (i_data='0') then  -- maybe not necessary
-                       --o_error<='0';
-                       start_en <='1';
-                       count <= count+1;
-                       o_rd_req <= '1';
-                     --else
-                     --o_error<='1';
-                     --end if;                    
-                  --elsif (i_stop='1') then -- maybe just use count=9 to tell that stop bit has been recieved and just get rid of this signal i_stop
-                      --if (i_rd_ack='0') then
-                         --o_rd_req <= '1';
-                      --end if; 
-                      --start_en <='0';
-              end if;
-                  
+                             
           
               if (start_en='1') then
                  --count <= count+1;       
