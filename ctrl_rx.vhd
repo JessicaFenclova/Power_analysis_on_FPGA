@@ -40,6 +40,7 @@ use ieee.numeric_std.all;
            --o_error <= '0';
            in_d <="11111111";
            o_data <="11111111";
+           start_en<='0';
            count <=0;
         elsif i_clk1'event and (i_clk1='1') then
            --if (i_start='1') then
@@ -47,15 +48,15 @@ use ieee.numeric_std.all;
                 --if (i_data='0') then  -- maybe not necessary
                     --o_error<='0';
                     start_en <='1';
-                    count <= count+1;
+                    count <= 0;
                 --else
                      --o_error<='1';
                 --end if;                    
                   --elsif (i_stop='1') then -- maybe just use count=9 to tell that stop bit has been recieved and just get rid of this signal i_stop
               end if; 
       
-        end if;
-        if (i_clk2='1') then  -- dont use event leave clk2 as signal, clk2='1'
+        --end if;
+        elsif (i_clk2='1') then  -- dont use event leave clk2 as signal, clk2='1'
                     
             --elsif (i_rd_ack='1') and (start_en='0') then
                     --o_error<='1';
@@ -64,8 +65,10 @@ use ieee.numeric_std.all;
             --end if;
                              
           
-            if (start_en='1') then                        
-                if (count>0) and (count<9) then    
+            if (start_en='1') then
+                if (count=0) then
+                    count <= (count+1);                        
+                elsif (count>0) and (count<9) then    
                     in_d(count-1) <= i_data; 
                     count <= (count+1);                                     
                 elsif (count=9) then
@@ -79,7 +82,7 @@ use ieee.numeric_std.all;
                         --start_en<='0'; -- added
                         o_data<= "11111111"; --added                    
                     end if;
-                    count<=0;                 
+                    --count<=0;                 
                 end if;
                 if (i_rd_ack='1') then
                    o_rd_req<= '0'; 
