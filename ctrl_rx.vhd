@@ -48,27 +48,19 @@ use ieee.numeric_std.all;
                 --if (i_data='0') then  -- maybe not necessary
                     --o_error<='0';
                     start_en <='1';
-                    count <= 0;
+                    count <= 1;
                 --else
                      --o_error<='1';
-                --end if;                    
-                  --elsif (i_stop='1') then -- maybe just use count=9 to tell that stop bit has been recieved and just get rid of this signal i_stop
+                --end if;             
               end if; 
       
         --end if;
-        elsif (i_clk2='1') then  -- dont use event leave clk2 as signal, clk2='1'
-                    
-            --elsif (i_rd_ack='1') and (start_en='0') then
-                    --o_error<='1';
-            --else
-                  --o_data<= "11111111"; -- added this else
-            --end if;
-                             
-          
+          if (i_clk2='1') then  -- dont use event leave clk2 as signal, clk2='1'
+                                    
             if (start_en='1') then
-                if (count=0) then
+                if (count=1) then
                     count <= (count+1);                        
-                elsif (count>0) and (count<9) then    
+                elsif (count>1) and (count<9) then    
                     in_d(count-1) <= i_data; 
                     count <= (count+1);                                     
                 elsif (count=9) then
@@ -93,7 +85,7 @@ use ieee.numeric_std.all;
                 end if;                 
                 --o_data<= in_d;         -- this causes the data to be sent out even though we dont have all of the in data            
             end if;
-                       
+           end if;            
         end if;
     end process p_rx;
     
