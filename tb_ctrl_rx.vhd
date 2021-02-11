@@ -101,8 +101,10 @@ architecture sim of tb_ctrl_rx is
       rd_ack<= '1';
       wait for 400 ns;
       rd_ack<='0';
-      --wait for 1780 ns;
-      --rd_ack<= '1';
+      wait for 8580 ns;
+      rd_ack<= '1';
+      wait for 400 ns;
+      rd_ack<='0';
       wait;
  end process;
  
@@ -114,6 +116,10 @@ architecture sim of tb_ctrl_rx is
       wait for 40 ns;
       start<='0';
       wait for 8840 ns;
+      start<= '1';
+      wait for 40 ns;
+      start<='0';
+      wait for 11580 ns;
       start<= '1';
       wait for 40 ns;
       --start<='0';
