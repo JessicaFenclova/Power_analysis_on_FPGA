@@ -27,7 +27,7 @@ use ieee.numeric_std.all;
     signal start_en: std_logic :='0';
     signal  in_d : std_logic_vector(7 downto 0):= "11111111";
     
-    signal count : integer :=0;
+    signal count : integer :=1;
     --signal slow_cnt : integer :=0;
  
        
@@ -48,22 +48,26 @@ use ieee.numeric_std.all;
                 --if (i_data='0') then  -- maybe not necessary
                     --o_error<='0';
                     start_en <='1';
-                    count <= 1;
+                    count <= 0;
                 --else
                      --o_error<='1';
                 --end if;             
-              end if; 
+              end if;
+              --if (count=0) and (start_en='1') then
+                    --count <= (count+1);
+              --end if;  
       
         --end if;
           if (i_clk2='1') then  -- dont use event leave clk2 as signal, clk2='1'
                                     
             if (start_en='1') then
-                if (count=1) then
-                    count <= (count+1);                        
-                elsif (count>1) and (count<9) then    
-                    in_d(count-1) <= i_data; 
+                --if (count=0) then
+                   --count <= (count+1);
+                   --in_d(count)<= i_data;                        
+                if (count<8) then    
+                    in_d(count) <= i_data; 
                     count <= (count+1);                                     
-                elsif (count=9) then
+                elsif (count=8) then
                     o_data<= in_d;
                     o_rd_req <= '1';
                     if (i_data='1') then
