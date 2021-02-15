@@ -11,7 +11,7 @@ entity baud_gen_tx is
    port (
        i_clkin     : in std_logic;
        i_res       : in std_logic;
-       i_start_clk : in std_logic;  -- misto start a stop staci jeden signal pro enable disable baud gen
+       i_en        : in std_logic;  -- misto start a stop staci jeden signal pro enable disable baud gen
        --i_stop_clk  : in std_logic;
        o_clkout    : out std_logic 
        --clk_per_bits : out integer;
@@ -34,7 +34,7 @@ begin
          count<=1;
          
       elsif rising_edge(i_clkin) then
-         if (i_start_clk='1') then
+         if (i_en='1') then
             count <= count + 1;     
          end if;
          if count = prescaler  then    
