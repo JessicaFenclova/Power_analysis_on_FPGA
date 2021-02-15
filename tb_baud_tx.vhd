@@ -13,7 +13,7 @@ component baud_gen_tx is       -- component definuje stejne jako ta entita ktera
     (
        i_clkin     : in std_logic;
        i_res       : in std_logic;
-       i_start_clk : in std_logic;
+       i_en        : in std_logic;
        --i_stop_clk  : in std_logic;
        o_clkout    : out std_logic
     );
@@ -31,7 +31,7 @@ dut: baud_gen_tx
      (
       i_clkin=>clk,
       i_res=>reset,
-      i_start_clk=>start,
+      i_en =>start,
       --i_stop_clk=>stop,
       o_clkout=>clkout
      );
