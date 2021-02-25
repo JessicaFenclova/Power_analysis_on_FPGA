@@ -13,16 +13,16 @@ architecture sim of tb_ctrl_aes is
     i_clk         : in std_logic;
     i_rst         : in std_logic;
     i_rd_req      : in std_logic;
-    i_data        : in std_logic;
+    i_data        : in std_logic_vector(7 downto 0);
     i_cmd_done    : in std_logic;
-    i_eval_result : in std_logic;
+    i_eval_result : in std_logic_vector(7 downto 0);
     i_wr_ack      : in std_logic;
     o_rd_ack      : out std_logic; 
     o_start_cmd   : out std_logic;
     o_cmd_reg     : out std_logic_vector(2 downto 0);
     o_param_reg   : out std_logic_vector(4 downto 0);
     o_wr_req      : out std_logic;
-    o_data        : out std_logic  
+    o_data        : out std_logic_vector(7 downto 0)  
     );
     
  end component;
@@ -30,16 +30,18 @@ architecture sim of tb_ctrl_aes is
      signal clk    : std_logic;
      signal reset    : std_logic;
      signal rd_req   : std_logic;
-     signal data  : std_logic;
-     signal dataout   : std_logic;
+     signal data  : std_logic_vector(7 downto 0);
+     signal dataout   : std_logic_vector(7 downto 0);
+     --signal start   : std_logic;
      signal cmd_done    :  std_logic;
-     signal ev_result :  std_logic;
+     signal ev_result :  std_logic_vector(7 downto 0);
      signal wr_ack      :  std_logic;
      signal rd_ack      :  std_logic; 
      signal start_cmd   : std_logic;
      signal cmd_reg     : std_logic_vector(2 downto 0);
      signal param_reg   :  std_logic_vector(4 downto 0);
      signal wr_req      :  std_logic;
+     signal e : std_logic;
 
     
      
@@ -78,9 +80,9 @@ architecture sim of tb_ctrl_aes is
       clk<='1';
       wait for 20 ns;    
     
-      --if e = '1' then 
-      --wait;
-      --end if;     
+      if e = '1' then 
+       wait;
+      end if;     
  end process;
  
  
@@ -89,7 +91,7 @@ architecture sim of tb_ctrl_aes is
       rd_req<='0';
       wait for 180 ns;
       rd_req<= '1';
-      wait for 200 ns;
+      wait for 100 ns;
       rd_req<='0';
       wait;
  end process;
@@ -97,7 +99,7 @@ architecture sim of tb_ctrl_aes is
  process 
    begin
       cmd_done<='0';
-      wait for 2400 ns;
+      wait for 8800 ns;
       cmd_done<= '1';
       wait for 400 ns;
       cmd_done<='0';
@@ -106,58 +108,36 @@ architecture sim of tb_ctrl_aes is
  
  process 
    begin
-      ev_result<='0';
-      wait for 2400 ns;
-      ev_result<= '1';
-      wait for 200 ns;
-      ev_result<='0';
+      ev_result<="00000000";
+      wait for 3800 ns;
+      ev_result<="00000011";
+      wait for 4000 ns;
+    
       wait;
  end process;
  
   process 
    begin
       wr_ack<='0';
-      wait for 3400 ns;
+      wait for 4600 ns;
       wr_ack<= '1';
       wait for 600 ns;
       wr_ack<='0';
       wait;
- end process;
-
-
-
-  
+ end process;  
  
  process
    begin
  
-      --e <= '0';
-      data <= '1';   --begin
-      wait for 180 ns;
-      data <= '0';   --0
-      wait for 220 ns; 
-      data <= '1';    --1
-      wait for 220 ns;
-      data <= '1';    --2
-      wait for 220 ns;
-      data <= '1';    --3
-      wait for 220 ns;
-      data <= '1';    --4
-      wait for 220 ns;
-      data <= '1';    --5
-      wait for 220 ns;
-      data <= '1';     --6
-      wait for 220 ns;
-      data <= '0';     --7
-      wait for 220 ns;
-      data <= '0';     --8
-      wait for 220 ns;
-      data <= '1';     --9
-      wait for 8040 ns;
+      e <= '0';
+      data <= "00000000";   --begin
+      wait for 4840 ns;
+      data <= "11001100";   --begin
+      wait for 4840 ns;
 
     
-      --e <= '1';
-      --wait;
+     e <= '1';
+    wait;
     
  end process;
 end;
