@@ -8,31 +8,32 @@ use ieee.numeric_std.all;
     i_clk         : in std_logic;
     i_rst         : in std_logic;
     i_rd_req      : in std_logic;
-    i_data        : in std_logic;
+    i_data        : in std_logic_vector(7 downto 0);
     i_cmd_done    : in std_logic;
-    i_eval_result : in std_logic;
+    i_eval_result : in std_logic_vector(7 downto 0);
     i_wr_ack      : in std_logic;
+    --i_start       : in std_logic;
     o_rd_ack      : out std_logic; -- do i want another signal out ready
     o_start_cmd   : out std_logic;
     o_cmd_reg     : out std_logic_vector(2 downto 0);
     o_param_reg   : out std_logic_vector(4 downto 0);
     o_wr_req      : out std_logic;
-    o_data        : out std_logic    
+    o_data        : out std_logic_vector(7 downto 0)    
   
     );
  end ctrl_aes;
  
  architecture rtl of ctrl_aes is
  
- type state_type is (s0,s1,s2,s3,s4);
+ type state_type is (wait_uart,fetch,exe_cmd,eval_res,send_res);
  
  
     signal state : state_type;
-    signal en_fetch: std_logic :='0';
-    signal  in_d : std_logic_vector(7 downto 0) :="11111111";
-    signal count : integer :=0;
-    signal eval_resul : std_logic:='0';
-    signal start_bit : std_logic :='0';
+    signal change_dete : std_logic :='0';
+    signal previous : std_logic_vector(7 downto 0) := "00000000";
+    signal  cmd_reg : std_logic_vector(2 downto 0) := "000";
+    signal param_reg : std_logic_vector(4 downto 0) := "00000";
+    
  
        
   begin
@@ -40,93 +41,86 @@ use ieee.numeric_std.all;
     p_wait: process(i_clk, i_rst)
       begin
         if i_rst = '0' then
-           in_d <="11111111";
-           state <= s0;
-           o_data <='1';
+           state <= wait_uart;
+           o_data <="11111111";
            o_param_reg <="00000";
            o_cmd_reg <="000";
            o_wr_req<='0';
            o_rd_ack<='0';
-           en_fetch<='0';
-           --count <=0;
-           start_bit<='0';
-        elsif i_clk'event and (i_clk='1') then        
+        elsif i_clk'event and (i_clk='1') then
+        
+            previous<=i_eval_result;
+            
+            --change_dete<=previous xor i_eval_result;        
         
             case state is
-              when s0 =>
+              when wait_uart =>
                  if (i_rd_req='1') then
-                   state <= s1;
+                   state <= fetch;
                   --enable <='1';
                   else
-                    state<=s0;
+                    state<=wait_uart;
                  end if; 
-              when s1 =>
-                 if (start_bit='1') then  --start bit of data i_data
-                   state <= s2;
+              when fetch =>
+                 if (i_rd_req='1') then  
+                   cmd_reg<=i_data(2 downto 0);
+                   param_reg<=i_data(7 downto 3);
+                   state <= exe_cmd;
                  else
-                   state<=s1;
+                   state<=fetch;
                  end if;
-              when s2 =>
-                 if (i_eval_result='1') then    --if change in eval result, the input from sbox
-                   state <= s3;
+              when exe_cmd =>
+                 if (change_dete='1') then    --if change in eval result, the input from sbox, or just act as if the data from the xor are there all the time
+                   state <= eval_res;
                  elsif (i_cmd_done='1') then
-                   state <= s0;
+                   state <= wait_uart;
                  else
-                   state<=s2;
+                   state<=exe_cmd;
                  end if;
-              when s3 =>
+              when eval_res =>
                  if (i_wr_ack='1') then
-                   state <= s4;
+                   state <= wait_uart;
                  else
-                   state<=s3;
+                   state<=eval_res;
                  end if;
-              when s4 =>
-                 state <= s0;
+              --when s4 =>
+                 --state <= s0;
               when others =>
-                   state <= s0;
-            end case;                                  
+                   state <= wait_uart;
+            end case;
+            --testing 
+            
+                                           
             
                      
         end if;
     end process p_wait;
+    change_dete <= '0' when i_eval_result = previous else '1';--change_dete<=previous xor i_eval_result;
     
     p_state: process(state)
       begin
         case state is
-            when s0 =>
+            when wait_uart =>
                 o_rd_ack <= '0';
-                o_wr_req<='0';
-                en_fetch<='0'; 
-            when s1 =>
-                o_rd_ack <='1';
-                en_fetch <='1';
-                if (count<8) and (en_fetch='1') then
-                   count<= count+1;
-                   in_d(count)<= i_data;
-                elsif (count=8)  then
-                   count<=0;
-                   start_bit<='1';
-                end if;
-            when s2 =>
+                o_wr_req<='0'; 
+            when fetch =>
+                o_rd_ack <='1';  
+            when exe_cmd =>
                 o_start_cmd <='1';
                 o_rd_ack <= '0';
-                en_fetch <='0';
-                o_cmd_reg<=in_d(2 downto 0);
-                o_param_reg <=in_d(7 downto 3);
-            when s3 =>
-               -- if (i_eval_result='1') then 
-               -- eval_res<='1';
-               eval_resul<=i_eval_result;
-                o_wr_req <='1';
-            when s4 =>
-                o_data <= eval_resul;
+                o_cmd_reg<=cmd_reg;
+                o_param_reg <=param_reg;
+            when eval_res =>
+               o_wr_req <='1';
+               o_data<=i_eval_result;    --just for now, dont have the block that would xor the sbox outputs                
             when others =>
                     o_rd_ack <= '0';
                     o_wr_req<='0';
-                    en_fetch<='0';
                     
         end case;
-    end process p_state;
+
+    end process p_state; 
+    
     
         
  end architecture rtl;
