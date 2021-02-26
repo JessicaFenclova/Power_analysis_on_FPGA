@@ -78,6 +78,7 @@ use ieee.numeric_std.all;
                    state<=exe_cmd;
                  end if;
               when eval_res =>
+                 o_data <= i_eval_result;
                  if (i_wr_ack='1') then
                    state <= wait_uart;
                  else
@@ -112,7 +113,7 @@ use ieee.numeric_std.all;
                 o_param_reg <=param_reg;
             when eval_res =>
                o_wr_req <='1';
-               o_data<=i_eval_result;    --just for now, dont have the block that would xor the sbox outputs                
+               --o_data <= i_eval_result;    --just for now, dont have the block that would xor the sbox outputs                
             when others =>
                     o_rd_ack <= '0';
                     o_wr_req<='0';
