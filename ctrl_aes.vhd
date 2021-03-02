@@ -50,11 +50,12 @@ use ieee.numeric_std.all;
       begin
         if i_rst = '0' then
            state <= wait_uart;
-           o_data <='0';
+           --start_cmd<='0';
            param_reg <="00000";
            cmd_reg <="000";
-           o_wr_req<='0';
-           o_rd_ack<='0';
+           --o_wr_req<='0';
+           --o_rd_ack<='0';
+           o_data <='0';
         elsif i_clk'event and (i_clk='1') then
                
         
@@ -108,14 +109,14 @@ use ieee.numeric_std.all;
                 o_rd_ack <= '0';
                 o_wr_req<='0'; 
             when fetch =>
-                o_rd_ack <='1';  
+                o_rd_ack <='1';
+                start_cmd<='0';  
             when exe_cmd =>
                 start_cmd <='1';
                 o_rd_ack <= '0';
-                --cmd_reg<=cmd_reg;
-                --o_param_reg <=param_reg;
             when eval_res =>
                o_wr_req <='1';
+               start_cmd<='0';
                --o_data <= i_eval_result;    --just for now, dont have the block that would xor the sbox outputs                
             when others =>
                     o_rd_ack <= '0';
@@ -173,7 +174,8 @@ use ieee.numeric_std.all;
       begin
         if i_rst = '0' then
            state2 <= ready2;
-
+           --o_lsb<="00000";
+           --o_msb<="00000";
         elsif i_clk'event and (i_clk='1') then
             case state2 is
               when ready2 =>
