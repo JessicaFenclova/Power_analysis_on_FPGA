@@ -20,6 +20,8 @@ architecture sim of tb_ctrl_aes is
     o_wr_req      : out std_logic;
     o_lsb         : out std_logic_vector(4 downto 0);
     o_msb         : out std_logic_vector(4 downto 0);
+    o_lsb_en      : out std_logic;
+    o_msb_en      : out std_logic;
     o_data        : out std_logic  
     );
     
@@ -36,6 +38,8 @@ architecture sim of tb_ctrl_aes is
      signal wr_req    :  std_logic;
      signal lsb       : std_logic_vector(4 downto 0);
      signal msb       : std_logic_vector(4 downto 0);
+     signal lsb_en    : std_logic;
+     signal msb_en    : std_logic;
      signal e : std_logic;
 
     
@@ -54,6 +58,8 @@ architecture sim of tb_ctrl_aes is
       o_wr_req=> wr_req,
       o_lsb=>lsb,
       o_msb=>msb,
+      o_lsb_en => lsb_en,
+      o_msb_en => msb_en,
       o_data=> dataout
                 
      );
