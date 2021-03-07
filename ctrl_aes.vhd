@@ -34,7 +34,7 @@ use ieee.numeric_std.all;
  type ctrl_state_type  is (wait_uart,fetch,exe_cmd,eval_res,send_res);   --state type for the controll state machine
  type active_sbox_type is (ready1, set_en, done1);                       --state type for the state machine for activating and deactivating sboxes
  type set_lfsr_type    is (ready2, set_lsb, set_msb, done2);             --state type for the state machine for setting the lfsr pseudo random generator
- type measure_power    is (ready3, encrypt_data, set_trigger, measure, reset_trigger, done3);    --state type for the state machine for measuring power consumption of the sbox operation in aes
+ type measure_power_type    is (ready3, encrypt_data, set_trigger, measure, reset_trigger, done3);    --state type for the state machine for measuring power consumption of the sbox operation in aes
  
  
     signal state       : ctrl_state_type;
@@ -53,10 +53,11 @@ use ieee.numeric_std.all;
     signal cmd_done2 : std_logic;
     --signal random_data : std_logic_vector(7 downto 0);
     
-    signal state3_measure  : measure_power;
+    signal state3_measure  : measure_power_type;
     signal cmd_done3 : std_logic;
-    signal old_result : std_logic_vector(4 downto 0);
+    signal old_result : std_logic_vector(7 downto 0);
     signal xor_result : std_logic;
+    signal eval_result :  std_logic;
     
  
        
@@ -93,7 +94,7 @@ use ieee.numeric_std.all;
                    state<=fetch;
                  end if;
               when exe_cmd =>
-                 if (i_eval_result='1') then    --if change in eval result, the input from sbox, or just act as if the data from the xor are there all the time
+                 if (eval_result='1') then    --if change in eval result, the input from sbox, or just act as if the data from the xor are there all the time
                    state <= eval_res;
                  elsif (cmd_done1='1') or (cmd_done2='1') then   -- a cmd_done came from a state machine
                    state <= wait_uart;
@@ -101,7 +102,7 @@ use ieee.numeric_std.all;
                    state<=exe_cmd;
                  end if;
               when eval_res =>
-                 o_data <= i_eval_result;
+                 o_data <= eval_result;
                  if (i_wr_ack='1') then
                    state <= wait_uart;
                  else
@@ -246,11 +247,12 @@ use ieee.numeric_std.all;
 
         elsif i_clk'event and (i_clk='1') then
            old_result<= i_xor_result;
-          if ((old_result xor i_xor_result)) then
-            xor_result<='1';
-          else
+          if (i_xor_result = old_result) then    --((old_result) xor (i_xor_result))
             xor_result<='0';
+          else
+            xor_result<='1';
           end if;
+          
         
             case state3_measure is
               when ready3 =>
@@ -264,8 +266,9 @@ use ieee.numeric_std.all;
               when set_trigger=>
                    state3_measure <= measure; 
               when measure =>
-                 if (i_xor_resut) then  
+                 if (xor_result='1') then  
                    state3_measure <= reset_trigger;
+                 end if;
               when reset_trigger => 
                    state3_measure <= done3;
               when others =>
@@ -279,7 +282,8 @@ use ieee.numeric_std.all;
         case state3_measure is
             when ready3 =>
                 o_gener_data <= '0';
-                cmd_don3 <='0'; 
+                cmd_done3 <='0';
+                eval_result <='1'; 
             when encrypt_data =>
                 o_gener_data <='1';  
             when set_trigger =>
@@ -290,7 +294,8 @@ use ieee.numeric_std.all;
             when reset_trigger =>
                o_trigger <='0';
             when done3 =>
-               cmd_done3 <='1';                
+               cmd_done3 <='1';
+               eval_result <='1';                
             when others =>
                 cmd_done3 <= '0';
                     
