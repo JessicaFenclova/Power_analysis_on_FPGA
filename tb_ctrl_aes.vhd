@@ -9,37 +9,41 @@ end;
 architecture sim of tb_ctrl_aes is
 
  component ctrl_aes is 
-  port (
-    i_clk         : in std_logic;
-    i_rst         : in std_logic;
-    i_rd_req      : in std_logic;
-    i_data        : in std_logic_vector(7 downto 0);
-    i_eval_result : in std_logic;
-    i_wr_ack      : in std_logic;
-    o_rd_ack      : out std_logic; -- do i want another signal out ready
-    o_wr_req      : out std_logic;
-    o_lsb         : out std_logic_vector(4 downto 0);
-    o_msb         : out std_logic_vector(4 downto 0);
-    o_lsb_en      : out std_logic;
-    o_msb_en      : out std_logic;
-    o_data        : out std_logic  
-    );
+  port ( 
+        i_clk         : in std_logic;
+        i_rst         : in std_logic;
+        i_rd_req      : in std_logic;
+        i_data        : in std_logic_vector(7 downto 0);
+        i_xor_result  : in std_logic_vector(7 downto 0);    --the sbox outputs put through xor, the state machine measure will use to tell the main state machine maybe the eval_result signal a 0 or 1, correct incorrect
+        i_wr_ack      : in std_logic;
+        o_rd_ack      : out std_logic; 
+        o_wr_req      : out std_logic;
+        o_param       : out std_logic_vector(4 downto 0); -- cmd tells if this will be the lsb or msb or param for enabling sboxes
+        o_lsb_en      : out std_logic;
+        o_msb_en      : out std_logic;
+        o_en_sbox     : out std_logic; -- state machine sbox will enable the decoder to take param reg bits and decode them to know which sboxes to enable
+        o_gener_data  : out std_logic; -- the state machine measure will let the lfsr know to generate new data or leave the data as they are
+        o_trigger     : out std_logic; -- the state machine measure will set and reset this
+        o_data        : out std_logic 
+     );
     
  end component;
  
-     signal clk       : std_logic;
-     signal reset     : std_logic;
-     signal rd_req    : std_logic;
-     signal data      : std_logic_vector(7 downto 0);
-     signal dataout   : std_logic;
-     signal ev_result :  std_logic;
-     signal wr_ack    :  std_logic;
-     signal rd_ack    :  std_logic; 
-     signal wr_req    :  std_logic;
-     signal lsb       : std_logic_vector(4 downto 0);
-     signal msb       : std_logic_vector(4 downto 0);
-     signal lsb_en    : std_logic;
-     signal msb_en    : std_logic;
+     signal clk        : std_logic;
+     signal reset      : std_logic;
+     signal rd_req     : std_logic;
+     signal data       : std_logic_vector(7 downto 0);
+     signal dataout    : std_logic;
+     signal xorin_res  :  std_logic_vector(7 downto 0);
+     signal wr_ack     :  std_logic;
+     signal rd_ack     :  std_logic; 
+     signal wr_req     :  std_logic;
+     signal param      : std_logic_vector(4 downto 0);
+     signal lsb_en     : std_logic;
+     signal msb_en     : std_logic;
+     signal en_sbox    : std_logic;
+     signal gener_data : std_logic;
+     signal trig       : std_logic;
      signal e : std_logic;
 
     
@@ -52,14 +56,16 @@ architecture sim of tb_ctrl_aes is
       i_rst=>reset,
       i_rd_req=>rd_req,
       i_data=>data,
-      i_eval_result=>ev_result,
+      i_xor_result=>xorin_res,
       i_wr_ack=>wr_ack,
       o_rd_ack=>rd_ack,
       o_wr_req=> wr_req,
-      o_lsb=>lsb,
-      o_msb=>msb,
+      o_param=>param,
       o_lsb_en => lsb_en,
       o_msb_en => msb_en,
+      o_en_sbox => en_sbox,
+      o_gener_data => gener_data,
+      o_trigger => trig,
       o_data=> dataout
                 
      );
@@ -109,23 +115,13 @@ architecture sim of tb_ctrl_aes is
  
  process 
    begin
-      ev_result<='0';
+      xorin_res<="11111111";
       wait for 840 ns;
-      ev_result<='1';
+      xorin_res<="00000000";
       wait for 100 ns;
-      ev_result<='0';
-      wait for 1820 ns;
-      ev_result<='1';
-      wait for 100 ns;
-      ev_result<='0';
-      wait for 1820 ns;
-      ev_result<='1';
-      wait for 100 ns;
-      ev_result<='0';
+      xorin_res<="00110011";
       wait for 2000 ns;
-      ev_result<='1';
-      wait for 100 ns;
-      ev_result<='0';
+      
       wait;
  end process;
  
