@@ -283,7 +283,8 @@ use ieee.numeric_std.all;
             when ready3 =>
                 o_gener_data <= '0';
                 cmd_done3 <='0';
-                eval_result <='1'; 
+                eval_result <='1';
+                o_trigger<='0'; 
             when encrypt_data =>
                 o_gener_data <='1';  
             when set_trigger =>
