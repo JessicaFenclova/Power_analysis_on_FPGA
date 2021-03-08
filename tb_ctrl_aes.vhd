@@ -110,6 +110,9 @@ architecture sim of tb_ctrl_aes is
       rd_req<= '1';
       wait for 100 ns;
       rd_req<='0';
+      wait for 1940 ns;
+      rd_req<= '1';
+      wait for 100 ns;
       wait;
  end process; 
  
@@ -118,9 +121,11 @@ architecture sim of tb_ctrl_aes is
       xorin_res<="11111111";
       wait for 840 ns;
       xorin_res<="00000000";
-      wait for 100 ns;
+      wait for 1000 ns;
       xorin_res<="00110011";
-      wait for 2000 ns;
+      wait for 5400 ns;
+      xorin_res<="11110011";
+      wait for 1000 ns;
       
       wait;
  end process;
@@ -158,6 +163,8 @@ architecture sim of tb_ctrl_aes is
       data <= "11111000";   --cmd for set lsb
       wait for 2000 ns;
       data <= "11111001";  -- cmd for set msb
+      wait for 2000 ns;
+      data <= "10000011";  -- cmd for starting the measuring 011
       wait for 2000 ns;
 
     
