@@ -57,7 +57,7 @@ use ieee.numeric_std.all;
     signal cmd_done3 : std_logic;
     signal old_result : std_logic_vector(7 downto 0);
     signal xor_result : std_logic;
-    signal eval_result :  std_logic;
+    signal eval_result :  std_logic :='1';    -- will be sent out o_data
     
  
        
@@ -73,7 +73,7 @@ use ieee.numeric_std.all;
            cmd_reg <="000";
            --o_wr_req<='0';
            --o_rd_ack<='0';
-           o_data <='0';
+           o_data <='1';
         elsif i_clk'event and (i_clk='1') then
                
             
@@ -102,7 +102,7 @@ use ieee.numeric_std.all;
                    state<=exe_cmd;
                  end if;
               when eval_res =>
-                 o_data <= eval_result;
+                 o_data <= eval_result; -- evaluate from measure the xor 8 bits and send 1 if ok or 0 if not
                  if (i_wr_ack='1') then
                    state <= wait_uart;
                  else
@@ -135,7 +135,7 @@ use ieee.numeric_std.all;
             when eval_res =>
                o_wr_req <='1';
                start_cmd<='0';
-               --o_data <= i_eval_result;    --just for now, dont have the block that would xor the sbox outputs                
+               --o_data <= eval_result;    --just for now, dont have the block that would xor the sbox outputs                
             when others =>
                 o_rd_ack <= '0';
                 o_wr_req<='0';
@@ -244,7 +244,7 @@ use ieee.numeric_std.all;
       begin
         if i_rst = '0' then
            state3_measure <= ready3;
-
+           --o_data<='1';
         elsif i_clk'event and (i_clk='1') then
            old_result<= i_xor_result;
           if (i_xor_result = old_result) then    --((old_result) xor (i_xor_result))
@@ -268,13 +268,15 @@ use ieee.numeric_std.all;
               when measure =>
                  if (xor_result='1') then  
                    state3_measure <= reset_trigger;
+                   -- xor all of the 8 bits of the xor result and send that to eval_result
                  end if;
               when reset_trigger => 
                    state3_measure <= done3;
               when others =>
                    state3_measure <= ready3;
             end case;
-        end if; 
+        end if;
+        --o_data<= eval_result; 
     end process p_ready3;
     
     p_state3: process(state3_measure)
@@ -284,6 +286,7 @@ use ieee.numeric_std.all;
                 o_gener_data <= '0';
                 cmd_done3 <='0';
                 eval_result <='1';
+                --o_data<='1';
                 o_trigger<='0'; 
             when encrypt_data =>
                 o_gener_data <='1';  
@@ -296,17 +299,28 @@ use ieee.numeric_std.all;
                o_trigger <='0';
             when done3 =>
                cmd_done3 <='1';
-               eval_result <='1';                
+               if  (i_xor_result="00000000")  then
+                  eval_result <='1'; -- need to add code for taking the xor 8 bits and evaluating if ok 1 or not 0
+                 --o_data<='1';
+                 --i_xor_result(i) xor i_xor_result(i+1) 
+               --elsif (i_xor_result="11111111") then        -- probably could just put else and that it is incorrect so out 0
+                  --eval_result <='0';
+               else
+                  eval_result <='0';
+                  --o_data<='0'; 
+               end if;              
             when others =>
                 cmd_done3 <= '0';
                     
         end case;
+        
     
 
     end process p_state3;
     
-    
+     --o_data<= eval_result;
      o_param<= param_reg;
+     
     
     
     
