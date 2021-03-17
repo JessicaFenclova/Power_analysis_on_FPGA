@@ -118,9 +118,9 @@ architecture sim of tb_ctrl_aes is
  
  process 
    begin
-      xorin_res<="11111111";
+      xorin_res<="11111111";  --incorrect
       wait for 840 ns;
-      xorin_res<="00000000";
+      xorin_res<="00000000";  --correct
       wait for 1000 ns;
       xorin_res<="00110011";
       wait for 5400 ns;
