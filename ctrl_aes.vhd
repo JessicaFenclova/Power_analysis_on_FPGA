@@ -56,7 +56,7 @@ use ieee.numeric_std.all;
     signal state3_measure  : measure_power_type;
     signal cmd_done3 : std_logic;
     signal old_result : std_logic_vector(7 downto 0);
-    signal xor_result : std_logic;
+    --signal xor_result : std_logic;
     signal eval_result :  std_logic :='1';    -- will be sent out o_data
     
  
@@ -96,7 +96,7 @@ use ieee.numeric_std.all;
               when exe_cmd =>
                  if (eval_result='1') then    --if change in eval result, the input from sbox, or just act as if the data from the xor are there all the time
                    state <= eval_res;
-                 elsif (cmd_done1='1') or (cmd_done2='1') then   -- a cmd_done came from a state machine
+                 elsif (cmd_done1='1') or (cmd_done2='1') or (cmd_done3='1') then   -- a cmd_done came from a state machine
                    state <= wait_uart;
                  else
                    state<=exe_cmd;
@@ -246,12 +246,12 @@ use ieee.numeric_std.all;
            state3_measure <= ready3;
            --o_data<='1';
         elsif i_clk'event and (i_clk='1') then
-           old_result<= i_xor_result;
-          if (i_xor_result = old_result) then    --((old_result) xor (i_xor_result))
-            xor_result<='0';
-          else
-            xor_result<='1';
-          end if;
+           --old_result<= i_xor_result;
+          --if (i_xor_result = old_result) then    --((old_result) xor (i_xor_result))
+            --xor_result<='0';
+          --else
+            --xor_result<='1';
+          --end if;
           
         
             case state3_measure is
@@ -266,12 +266,13 @@ use ieee.numeric_std.all;
               when set_trigger=>
                    state3_measure <= measure; 
               when measure =>
-                 if (xor_result='1') then  
+                 --if (xor_result='1') then  
                    state3_measure <= reset_trigger;
                    -- xor all of the 8 bits of the xor result and send that to eval_result
-                 end if;
+                 --end if;
               when reset_trigger => 
                    state3_measure <= done3;
+             
               when others =>
                    state3_measure <= ready3;
             end case;
