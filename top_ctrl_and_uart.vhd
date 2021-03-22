@@ -73,6 +73,7 @@ architecture rtl of top_ctrl_and_uart is
    signal wr_acknowl   : std_logic;
    signal datain_ctrl  : std_logic_vector(7 downto 0); -- from uart rx to ctrl
    signal dataout_ctrl : std_logic;                    -- from ctrl to uart tx
+   signal data_outtx   : std_logic_vector(7 downto 0); 
    
        
  begin
@@ -124,12 +125,12 @@ i_tx: top_ctrl_tx
        in_clock    => i_clock,   
        in_reset    => i_reset,
        in_wr_req   => wr_request,
-       in_data     => dataout_ctrl ,
-       out_data_tx => o_data,        --std_logic but it is std_logic_vector
+       in_data     => data_outtx,    --dataout_ctrl ,  std_logic but it is std_logic_vector
+       out_data_tx => o_data,         
        out_wr_ack  => wr_acknowl    
      );
 
-    
+     data_outtx <= "0000000" & dataout_ctrl;
      --out_data_uart <= dataout; 
     
     
