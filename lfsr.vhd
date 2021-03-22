@@ -39,6 +39,8 @@ use ieee.numeric_std.all;
         elsif in_clk'event and (in_clk='1') then
              
              out_lfsr<=in_lfsr;
+             
+             
 
         end if;
 
@@ -52,14 +54,25 @@ use ieee.numeric_std.all;
           in_lfsr(7 downto 1)<=out_lfsr(6 downto 0);
           --in_lfsr<=out_lfsr;         
        elsif (i_gener_data='0') then
-            if (i_lsb_en='1') then 
+            
+            --in_lfsr(3 downto 0)<= bits_reg;
+            if (i_lsb_en='1') then
+                
                bits_reg<= i_param_bits(3 downto 0);
-               in_lfsr(3 downto 0)<= bits_reg;
-            elsif (i_msb_en='1') then 
+               --in_lfsr(3 downto 0)<= bits_reg;
+            elsif (i_msb_en='1') then
+                
                bits_reg<= i_param_bits(3 downto 0);
+               --in_lfsr(7 downto 4)<=bits_reg;
+            elsif (i_lsb_en='0') then
                in_lfsr(7 downto 4)<=bits_reg;
-            end if;       
+            elsif (i_msb_en='0') then
+               in_lfsr(3 downto 0)<=bits_reg;
+            end if;
+                   
        end if;
+       
+       
       
   end process p_lfsr_2;
   
