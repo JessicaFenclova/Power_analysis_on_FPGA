@@ -58,19 +58,20 @@ use ieee.numeric_std.all;
             --in_lfsr(3 downto 0)<= bits_reg;
             if (i_lsb_en='1') then
                 
-               bits_reg<= i_param_bits(3 downto 0);
-               --in_lfsr(3 downto 0)<= bits_reg;
+               --bits_reg<= i_param_bits(3 downto 0);
+               in_lfsr(3 downto 0)<= i_param_bits(3 downto 0);
             elsif (i_msb_en='1') then
                 
-               bits_reg<= i_param_bits(3 downto 0);
+               --bits_reg<= i_param_bits(3 downto 0);
+               in_lfsr(7 downto 4)<= i_param_bits(3 downto 0);
+            --elsif (i_lsb_en='0') then
                --in_lfsr(7 downto 4)<=bits_reg;
-            elsif (i_lsb_en='0') then
-               in_lfsr(7 downto 4)<=bits_reg;
-            elsif (i_msb_en='0') then
-               in_lfsr(3 downto 0)<=bits_reg;
+            --elsif (i_msb_en='0') then
+               --in_lfsr(3 downto 0)<=bits_reg;
             end if;
                    
        end if;
+        
        
        
       
