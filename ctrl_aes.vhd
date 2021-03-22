@@ -41,20 +41,21 @@ use ieee.numeric_std.all;
     signal  cmd_reg    : std_logic_vector(2 downto 0) := "000";
     signal param_reg   : std_logic_vector(4 downto 0) := "00000";
     --signal cmd_done    : std_logic :='0';  --cmd_done is the or of all cmd_done signals from state machines
+    signal cmd_done    : std_logic_vector(2 downto 0) := "000";
     signal start_cmd   : std_logic :='0';
     
     signal state1_sbox    : active_sbox_type;
     --signal en_sbox   : std_logic;
-    signal cmd_done1 : std_logic;
+    --signal cmd_done1 : std_logic; --instead cmd__done vector
     
     signal state2_lfsr    : set_lfsr_type;
     --signal lsb       : std_logic_vector(4 downto 0);
     --signal msb       : std_logic_vector(4 downto 0);
-    signal cmd_done2 : std_logic;
+    --signal cmd_done2 : std_logic; --instead cmd__done vector
     --signal random_data : std_logic_vector(7 downto 0);
     
     signal state3_measure  : measure_power_type;
-    signal cmd_done3 : std_logic;
+    --signal cmd_done3 : std_logic;   --instead cmd__done vector
     signal old_result : std_logic_vector(7 downto 0);
     --signal xor_result : std_logic;
     signal eval_result :  std_logic :='1';    -- will be sent out o_data
@@ -96,7 +97,7 @@ use ieee.numeric_std.all;
               when exe_cmd =>
                  if (eval_result='1') then    --if change in eval result, the input from sbox, or just act as if the data from the xor are there all the time
                    state <= eval_res;
-                 elsif (cmd_done1='1') or (cmd_done2='1') or (cmd_done3='1') then   -- a cmd_done came from a state machine
+                 elsif (cmd_done/="000") then   -- a cmd_done came from a state machine, (cmd_done1='1') or (cmd_done2='1') or (cmd_done3='1')
                    state <= wait_uart;
                  else
                    state<=exe_cmd;
@@ -171,13 +172,13 @@ use ieee.numeric_std.all;
         case state1_sbox is
             when ready1 =>
                 o_en_sbox <= '0';
-                cmd_done1 <='0'; 
+                cmd_done(0) <='0'; 
             when set_en =>
                 o_en_sbox <='1';
                 --put out the param 
                 --param_reg <=  
             when done1 =>
-               cmd_done1 <='1';                
+               cmd_done(0) <='1';                
             when others =>
                 o_en_sbox <= '0';
                     
@@ -221,7 +222,7 @@ use ieee.numeric_std.all;
                 --o_msb<="00000";
                 o_lsb_en<='0';
                 o_msb_en<='0';
-                cmd_done2 <= '0';
+                cmd_done(1) <= '0';
             when set_lsb =>
                 --o_lsb <= param_reg; -- output to o_param
                 o_lsb_en <='1';  
@@ -229,9 +230,9 @@ use ieee.numeric_std.all;
                 --o_msb <= param_reg;
                 o_msb_en <='1';
             when done2 =>
-               cmd_done2 <='1';               
+               cmd_done(1) <='1';               
             when others =>
-                cmd_done2 <= '0';
+                cmd_done(1) <= '0';
                     
          end case;
 
@@ -285,7 +286,7 @@ use ieee.numeric_std.all;
         case state3_measure is
             when ready3 =>
                 o_gener_data <= '0';
-                cmd_done3 <='0';
+                cmd_done(2) <='0';
                 eval_result <='1';
                 --o_data<='1';
                 o_trigger<='0'; 
@@ -299,7 +300,7 @@ use ieee.numeric_std.all;
             when reset_trigger =>
                o_trigger <='0';
             when done3 =>
-               cmd_done3 <='1';
+               cmd_done(2) <='1';
                if  (i_xor_result="00000000")  then
                   eval_result <='1'; -- need to add code for taking the xor 8 bits and evaluating if ok 1 or not 0
                  --o_data<='1';
@@ -311,7 +312,7 @@ use ieee.numeric_std.all;
                   --o_data<='0'; 
                end if;              
             when others =>
-                cmd_done3 <= '0';
+                cmd_done(2) <= '0';
                     
         end case;
         
