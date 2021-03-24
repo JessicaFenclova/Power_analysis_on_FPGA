@@ -20,7 +20,7 @@ use ieee.numeric_std.all;
   
   architecture rtl of lfsr is
   
-     signal bits_reg      : std_logic_vector(3 downto 0):="1111";
+     --signal bits_reg      : std_logic_vector(3 downto 0):="1111";
      signal out_lfsr      : std_logic_vector(7 downto 0):="11111111";
      signal in_lfsr       : std_logic_vector(7 downto 0):="11111111";
      --signal out_shift_xor : std_logic; 
@@ -38,43 +38,29 @@ use ieee.numeric_std.all;
                                      
         elsif in_clk'event and (in_clk='1') then
              
-             out_lfsr<=in_lfsr;
-             
+             out_lfsr<=in_lfsr;            
              
 
         end if;
 
   end process p_lfsr;
   
-  p_lfsr_2 : process(i_gener_data, i_lsb_en, i_msb_en)
+  p_lfsr_2 : process(i_gener_data, i_lsb_en, i_msb_en,i_param_bits)
     begin
        if (i_gener_data='1') then
           in_lfsr<=out_lfsr;
           in_lfsr(0)<=((out_lfsr(0)) XOR (out_lfsr(2)) XOR (out_lfsr(3)) XOR (out_lfsr(4))); -- switch out with in
-          in_lfsr(7 downto 1)<=out_lfsr(6 downto 0);
-          --in_lfsr<=out_lfsr;         
+          in_lfsr(7 downto 1)<=out_lfsr(6 downto 0);                   
        elsif (i_gener_data='0') then
-            
-            --in_lfsr(3 downto 0)<= bits_reg;
-            if (i_lsb_en='1') then
-                
-               --bits_reg<= i_param_bits(3 downto 0);
+            if (i_lsb_en='1') then                
                in_lfsr(3 downto 0)<= i_param_bits(3 downto 0);
             elsif (i_msb_en='1') then
-                
-               --bits_reg<= i_param_bits(3 downto 0);
                in_lfsr(7 downto 4)<= i_param_bits(3 downto 0);
-            --elsif (i_lsb_en='0') then
-               --in_lfsr(7 downto 4)<=bits_reg;
-            --elsif (i_msb_en='0') then
-               --in_lfsr(3 downto 0)<=bits_reg;
-            end if;
-                   
-       end if;
-        
-       
-       
-      
+            else
+               in_lfsr <=out_lfsr;
+            end if;                   
+       end if;     
+   
   end process p_lfsr_2;
   
   
