@@ -23,7 +23,7 @@ use ieee.numeric_std.all;
     o_en_sbox     : out std_logic; -- state machine sbox will enable the decoder to take param reg bits and decode them to know which sboxes to enable
     o_gener_data  : out std_logic; -- the state machine measure will let the lfsr know to generate new data or leave the data as they are
     o_trigger     : out std_logic; -- the state machine measure will set and reset this
-    o_data        : out std_logic    
+    o_data        : out std_logic_vector(7 downto 0)    
   
     );
  end ctrl_aes;
@@ -56,7 +56,7 @@ use ieee.numeric_std.all;
     
     signal state3_measure  : measure_power_type;
     --signal cmd_done3 : std_logic;   --instead cmd__done vector
-    signal old_result : std_logic_vector(7 downto 0);
+    --signal old_result : std_logic_vector(7 downto 0);
     --signal xor_result : std_logic;
     signal eval_result :  std_logic :='1';    -- will be sent out o_data
     
@@ -74,22 +74,24 @@ use ieee.numeric_std.all;
            cmd_reg <="000";
            --o_wr_req<='0';
            --o_rd_ack<='0';
-           o_data <='1';
+           o_data <="11111111";
         elsif i_clk'event and (i_clk='1') then
                
             
             case state is
               when wait_uart =>
+                 --o_data <="11111111";
                  if (i_rd_req='1') then
                    state <= fetch;
-                  --enable <='1';
+                   --o_data <="11111111";
+                  --enable <='1';                    
                   else
                     state<=wait_uart;
                  end if; 
               when fetch =>
-                 if (i_rd_req='1') then  
-                   cmd_reg<=i_data(2 downto 0);
-                   param_reg<=i_data(7 downto 3);
+                 if (i_rd_req='1') then
+                   param_reg<=i_data(4 downto 0);  --5bits
+                   cmd_reg<=i_data(7 downto 5);  --3bits                 
                    state <= exe_cmd;
                  else
                    state<=fetch;
@@ -103,7 +105,7 @@ use ieee.numeric_std.all;
                    state<=exe_cmd;
                  end if;
               when eval_res =>
-                 o_data <= eval_result; -- evaluate from measure the xor 8 bits and send 1 if ok or 0 if not
+                 o_data <= i_xor_result; -- evaluate from measure the xor 8 bits and send 1 if ok or 0 if not
                  if (i_wr_ack='1') then
                    state <= wait_uart;
                  else
@@ -153,7 +155,7 @@ use ieee.numeric_std.all;
         elsif i_clk'event and (i_clk='1') then
             case state1_sbox is
               when ready1 =>
-                 if (start_cmd='1') and (cmd_reg="010") then
+                 if (start_cmd='1') and (cmd_reg="010") then     -- cmd_reg () 3 bits from data in, the 3 msb
                    state1_sbox <= set_en;
                    --here i could put the param reg out for the decoder entity
                   else
@@ -198,7 +200,7 @@ use ieee.numeric_std.all;
                  if (start_cmd='1') and (cmd_reg="000") then
                    state2_lfsr <= set_lsb;
                    -- put out param or in the process for state
-                 elsif (start_cmd='1') and (cmd_reg="001") then
+                 elsif (start_cmd='1') and (cmd_reg="100") then
                    state2_lfsr <= set_msb;
                  else
                     state2_lfsr<=ready2;
@@ -245,7 +247,7 @@ use ieee.numeric_std.all;
       begin
         if i_rst = '0' then
            state3_measure <= ready3;
-           --o_data<='1';
+           
         elsif i_clk'event and (i_clk='1') then
            --old_result<= i_xor_result;
           --if (i_xor_result = old_result) then    --((old_result) xor (i_xor_result))
@@ -257,7 +259,7 @@ use ieee.numeric_std.all;
         
             case state3_measure is
               when ready3 =>
-                 if (start_cmd='1') and (cmd_reg="011") then
+                 if (start_cmd='1') and (cmd_reg="110") then
                    state3_measure <= encrypt_data;
                   else
                     state3_measure <=ready3;
@@ -301,9 +303,10 @@ use ieee.numeric_std.all;
                o_trigger <='0';
             when done3 =>
                cmd_done(2) <='1';
+               --o_data<=i_xor_result;
                if  (i_xor_result="00000000")  then
                   eval_result <='1'; -- need to add code for taking the xor 8 bits and evaluating if ok 1 or not 0
-                 --o_data<='1';
+                  --o_data<='1';
                  --i_xor_result(i) xor i_xor_result(i+1) 
                --elsif (i_xor_result="11111111") then        -- probably could just put else and that it is incorrect so out 0
                   --eval_result <='0';
