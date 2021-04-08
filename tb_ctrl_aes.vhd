@@ -24,7 +24,7 @@ architecture sim of tb_ctrl_aes is
         o_en_sbox     : out std_logic; -- state machine sbox will enable the decoder to take param reg bits and decode them to know which sboxes to enable
         o_gener_data  : out std_logic; -- the state machine measure will let the lfsr know to generate new data or leave the data as they are
         o_trigger     : out std_logic; -- the state machine measure will set and reset this
-        o_data        : out std_logic 
+        o_data        : out std_logic_vector(7 downto 0) 
      );
     
  end component;
@@ -33,7 +33,7 @@ architecture sim of tb_ctrl_aes is
      signal reset      : std_logic;
      signal rd_req     : std_logic;
      signal data       : std_logic_vector(7 downto 0);
-     signal dataout    : std_logic;
+     signal dataout    : std_logic_vector(7 downto 0);
      signal xorin_res  :  std_logic_vector(7 downto 0);
      signal wr_ack     :  std_logic;
      signal rd_ack     :  std_logic; 
