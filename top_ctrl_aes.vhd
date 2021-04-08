@@ -15,7 +15,7 @@ use ieee.numeric_std.all;
          out_read_ack  : out std_logic;
          out_trigger   : out std_logic;
          out_bits_sbox : out std_logic_vector(7 downto 0);
-         out_data_aes  : out std_logic           
+         out_data_aes  : out std_logic_vector(7 downto 0)           
   
        );
  end top_ctrl_aes;
@@ -42,7 +42,7 @@ architecture rtl of top_ctrl_aes is
           o_en_sbox     : out std_logic; -- state machine sbox will enable the decoder to take param reg bits and decode them to know which sboxes to enable
           o_gener_data  : out std_logic; -- the state machine measure will let the lfsr know to generate new data or leave the data as they are
           o_trigger     : out std_logic; -- the state machine measure will set and reset this
-          o_data        : out std_logic
+          o_data        : out std_logic_vector(7 downto 0)
          );
  end component;
  
