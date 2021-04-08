@@ -20,7 +20,7 @@ architecture sim of tb_top_ctrl_aes is
          out_read_ack  : out std_logic;
          out_trigger   : out std_logic;
          out_bits_sbox : out std_logic_vector(7 downto 0);
-         out_data_aes  : out std_logic           
+         out_data_aes  : out std_logic_vector(7 downto 0)           
   
        );
     
@@ -33,7 +33,7 @@ architecture sim of tb_top_ctrl_aes is
      signal readack   : std_logic;
      signal writereq  : std_logic;
      signal trig      : std_logic;
-     signal data_out  : std_logic;      
+     signal data_out  : std_logic_vector(7 downto 0);      
      signal dataaes   : std_logic_vector(7 downto 0);
      signal datasbox  : std_logic_vector(7 downto 0);
      signal gener_bits: std_logic_vector(7 downto 0);
@@ -101,6 +101,14 @@ architecture sim of tb_top_ctrl_aes is
       wait for 1940 ns;
       readreq<= '1';
       wait for 100 ns;
+      readreq<='0';
+      wait for 1940 ns;
+      readreq<= '1';
+      wait for 100 ns;
+      readreq<='0';
+      wait for 1940 ns;
+      readreq<= '1';
+      wait for 100 ns;
       wait;
  end process;
  
@@ -116,6 +124,10 @@ architecture sim of tb_top_ctrl_aes is
       wait for 100 ns;
       writeack<='0';
       wait for 1800 ns;
+      writeack<= '1';
+      wait for 100 ns;
+      writeack<='0';
+      wait for 2000 ns;
       writeack<= '1';
       wait for 100 ns;
       writeack<='0';
@@ -155,6 +167,10 @@ architecture sim of tb_top_ctrl_aes is
       dataaes <= "11111001";  -- cmd for set msb
       wait for 2000 ns;
       dataaes <= "10000011";  -- cmd for starting the measuring 011
+      wait for 2000 ns;
+      dataaes <= "10011010";   --cmd for enable sbox, the 3 bits from the end
+      wait for 2000 ns;
+      dataaes <= "00111001";  -- cmd for set msb
       wait for 2000 ns;
       --dataaes <= "10000011";  -- cmd for starting the measuring 011
       --wait for 2000 ns;
