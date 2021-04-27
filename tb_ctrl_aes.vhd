@@ -158,13 +158,13 @@ architecture sim of tb_ctrl_aes is
       e <= '0';
       data <= "00000000";   --begin , but the cmd 000 is for setting lsb
       wait for 1000 ns;
-      data <= "11111010";   --cmd for enable sbox, the 3 bits from the end
+      data <= "01011111";   --cmd for enable sbox, the 3 bits from the end
       wait for 2000 ns;
       data <= "11111000";   --cmd for set lsb
       wait for 2000 ns;
-      data <= "11111001";  -- cmd for set msb
+      data <= "00111111";  -- cmd for set msb
       wait for 2000 ns;
-      data <= "10000011";  -- cmd for starting the measuring 011
+      data <= "01110000";  -- cmd for starting the measuring 011
       wait for 2000 ns;
 
     
