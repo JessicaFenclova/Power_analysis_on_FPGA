@@ -5,10 +5,23 @@ def pick_command():
     cmd=input("Pick a command: \n 1: Set LSB in LFSR \n 2: Set MSB in LFSR \n 3: Set number of S-box \n 4: Start measurement \n")
     cmd=int(cmd)
     print(cmd)
-    param=input("Enter the parameter 5 bits corresponding to the command in binary form: \t ")
-    param=int(param,2)
-     # if cmd 1 or 2 then param is the seed of the lfsr, if cmd 3 the param is the number of s-box
+    if(cmd==4):
+        print("No parameter required.")
+        param=0
+
+
+    else:
+        param=input("Enter the parameter 5 bits corresponding to the command in binary form: \t ")
+        param=int(param,2)
+
     print(param)
+
+
+
+    #param=input("Enter the parameter 5 bits corresponding to the command in binary form: \t ")
+    #param=int(param,2)
+     # if cmd 1 or 2 then param is the seed of the lfsr, if cmd 3 the param is the number of s-box
+
 
     if cmd==1:
         byte1=int('00000000',2)
@@ -37,6 +50,16 @@ def pick_command():
 
     #ser.readall()
 #functions for serial communication and for setting the cmd and param and sending it to the FPGA
+def eval_result(xor_data):
+    if(xor_data==0):
+        print("Result data correct")
+    else:
+        print("Result data incorrect")
+
+
+
+
+
 ser=0
 
 def init_serial(com_port,data):
@@ -56,16 +79,26 @@ def init_serial(com_port,data):
         print ("Open: " + ser.portstr)
 
     #print(trans_byte)
+    ser.timeout=5
     ser.write(data)
 
     while 1:
         try:
+            #time.sleep(0.01)
+            #wait=ser.port.inWaiting
+            #print(wait)
             rec_byte=ser.read() #readall
-            print ("Received data:" + rec_byte)
+            print ("Received data:" + rec_byte.decode("ascii"))
+            eval_result(rec_byte)
             #break
-        except:
+            raise Exception("Woah")
+        except serial.SerialException:
+            print ("Device has not sent data")
+
+
+        #except Exception:
             #print("Keyboard Interrupt") # ctrl+c
-            break
+            #break
             #pass
 
 
@@ -78,6 +111,13 @@ def init_serial(com_port,data):
 trans_byte=pick_command()
 #print(trans_byte)
 init_serial('com8',trans_byte)
+enter=input("Press enter if you wish to send another command")
+if(enter==""):
+    trans_byte=pick_command()
+    #print(trans_byte)
+    init_serial('com8',trans_byte)
+
+
 
 #send_cmd_param(byte)
 #ser.write(trans_byte)
