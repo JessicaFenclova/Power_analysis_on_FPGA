@@ -126,22 +126,27 @@ use ieee.numeric_std.all;
     p_state: process(state)
       begin
         case state is
-            when wait_uart =>
+            when wait_uart =>         --because of latches the rd_ack and wr_req had to be added to all paths
                 o_rd_ack <= '0';
-                o_wr_req<='0'; 
+                o_wr_req<='0';
+                start_cmd<='0'; 
             when fetch =>
                 o_rd_ack <='1';
+                o_wr_req<='0';
                 start_cmd<='0';  
             when exe_cmd =>
                 start_cmd <='1';
+                o_wr_req<='0';
                 o_rd_ack <= '0';
             when eval_res =>
+               o_rd_ack <= '0';
                o_wr_req <='1';
                start_cmd<='0';
                --o_data <= eval_result;    --just for now, dont have the block that would xor the sbox outputs                
             when others =>
                 o_rd_ack <= '0';
                 o_wr_req<='0';
+                start_cmd<='0';
                     
         end case;
 
@@ -177,11 +182,14 @@ use ieee.numeric_std.all;
                 cmd_done(0) <='0'; 
             when set_en =>
                 o_en_sbox <='1';
+                cmd_done(0) <='0';
                 --put out the param 
                 --param_reg <=  
             when done1 =>
-               cmd_done(0) <='1';                
+               cmd_done(0) <='1';
+               o_en_sbox <='1';                
             when others =>
+                cmd_done(0) <='0';
                 o_en_sbox <= '0';
                     
         end case;
@@ -227,14 +235,22 @@ use ieee.numeric_std.all;
                 cmd_done(1) <= '0';
             when set_lsb =>
                 --o_lsb <= param_reg; -- output to o_param
-                o_lsb_en <='1';  
+                o_lsb_en <='1';
+                o_msb_en<='0';
+                cmd_done(1) <= '0';  
             when set_msb =>
                 --o_msb <= param_reg;
+                o_lsb_en<='0';
                 o_msb_en <='1';
+                cmd_done(1) <= '0';
             when done2 =>
-               cmd_done(1) <='1';               
+               cmd_done(1) <='1';
+               o_lsb_en<='0';
+               o_msb_en<='0';               
             when others =>
                 cmd_done(1) <= '0';
+                o_lsb_en<='0';
+                o_msb_en<='0';
                     
          end case;
 
@@ -283,7 +299,7 @@ use ieee.numeric_std.all;
         --o_data<= eval_result; 
     end process p_ready3;
     
-    p_state3: process(state3_measure)
+    p_state3: process(state3_measure, i_xor_result)
       begin
         case state3_measure is
             when ready3 =>
@@ -293,16 +309,30 @@ use ieee.numeric_std.all;
                 --o_data<='1';
                 o_trigger<='0'; 
             when encrypt_data =>
-                o_gener_data <='1';  
+                o_gener_data <='1';
+                cmd_done(2) <='0';
+                o_trigger<='0';
+                eval_result <='0';  
             when set_trigger =>
+               o_gener_data <= '0';
+               cmd_done(2) <='0';
                o_trigger <='1';
+               eval_result <='0';
             when measure =>
                 -- maybe the trigger for sboxes
-                o_gener_data <='0';  
+                o_trigger <='1';
+                o_gener_data <='0';
+                cmd_done(2) <='0';
+                eval_result <='0';  
             when reset_trigger =>
+               o_gener_data <= '0';
+               cmd_done(2) <='0';
                o_trigger <='0';
+               eval_result <='0';
             when done3 =>
                cmd_done(2) <='1';
+               o_gener_data <= '0';
+               o_trigger<='0';
                --o_data<=i_xor_result;
                if  (i_xor_result="00000000")  then
                   eval_result <='1'; -- need to add code for taking the xor 8 bits and evaluating if ok 1 or not 0
@@ -316,6 +346,10 @@ use ieee.numeric_std.all;
                end if;              
             when others =>
                 cmd_done(2) <= '0';
+                o_gener_data <= '0';
+                cmd_done(2) <='0';
+                o_trigger<='0';
+                eval_result <='0';
                     
         end case;
         
