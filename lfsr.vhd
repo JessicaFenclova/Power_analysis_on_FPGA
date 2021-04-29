@@ -45,20 +45,25 @@ use ieee.numeric_std.all;
 
   end process p_lfsr;
   
-  p_lfsr_2 : process(i_gener_data, i_lsb_en, i_msb_en,i_param_bits)
+  p_lfsr_2 : process(i_gener_data, i_lsb_en, i_msb_en,i_param_bits, out_lfsr)
     begin
        if (i_gener_data='1') then
           in_lfsr<=out_lfsr;
           in_lfsr(0)<=((out_lfsr(0)) XOR (out_lfsr(2)) XOR (out_lfsr(3)) XOR (out_lfsr(4))); -- switch out with in
           in_lfsr(7 downto 1)<=out_lfsr(6 downto 0);                   
-       elsif (i_gener_data='0') then
+       --elsif (i_gener_data='0') then
+       else
             if (i_lsb_en='1') then                
                in_lfsr(3 downto 0)<= i_param_bits(3 downto 0);
+               in_lfsr(7 downto 4)<= out_lfsr(7 downto 4);        -- to make sure in_lfsr doesn't behave as a latch, all bits must be defined  , or  in_lfsr(7 downto 4)<= in_lfsr(7 downto 4) and "1111"
             elsif (i_msb_en='1') then
                in_lfsr(7 downto 4)<= i_param_bits(3 downto 0);
+               in_lfsr(3 downto 0)<= out_lfsr(3 downto 0);
             else
                in_lfsr <=out_lfsr;
-            end if;                   
+            end if;
+       --else
+          --in_lfsr <=out_lfsr;                   
        end if;     
    
   end process p_lfsr_2;
