@@ -14,6 +14,7 @@ use ieee.numeric_std.all;
          out_write_req : out std_logic;
          out_read_ack  : out std_logic;
          out_trigger   : out std_logic;
+         out_en_sbox   : out std_logic_vector(31 downto 0);
          out_bits_sbox : out std_logic_vector(7 downto 0);
          out_data_aes  : out std_logic_vector(7 downto 0)           
   
@@ -54,7 +55,7 @@ architecture rtl of top_ctrl_aes is
          i_reset    : in std_logic;
          i_enable   : in std_logic;    
          i_param    : in std_logic_vector(4 downto 0);
-         o_en_sbox  : out std_logic_vector(30 downto 0) --31 optional sboxes, param 5 bits 2^5 -> 31
+         o_en_sbox  : out std_logic_vector(31 downto 0) --31 optional sboxes, param 5 bits 2^5 -> 31
          );
  end component;
  
@@ -80,7 +81,7 @@ architecture rtl of top_ctrl_aes is
    signal lsb_en   : std_logic;
    signal msb_en   : std_logic;
    signal param    : std_logic_vector(4 downto 0);
-   signal sbox_enable  : std_logic_vector(30 downto 0);
+   --signal sbox_enable  : std_logic_vector(30 downto 0);
        
  begin
   
@@ -124,7 +125,7 @@ architecture rtl of top_ctrl_aes is
        i_reset   => in_rst_aes,
        i_enable  => decoder_en,
        i_param   => param,
-       o_en_sbox => sbox_enable    
+       o_en_sbox => out_en_sbox    
      );     
     
 i_lfsr: lfsr 
