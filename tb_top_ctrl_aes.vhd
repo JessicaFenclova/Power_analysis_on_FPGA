@@ -19,6 +19,7 @@ architecture sim of tb_top_ctrl_aes is
          out_write_req : out std_logic;
          out_read_ack  : out std_logic;
          out_trigger   : out std_logic;
+         out_en_sbox   : out std_logic_vector(31 downto 0);
          out_bits_sbox : out std_logic_vector(7 downto 0);
          out_data_aes  : out std_logic_vector(7 downto 0)           
   
@@ -35,6 +36,7 @@ architecture sim of tb_top_ctrl_aes is
      signal trig      : std_logic;
      signal data_out  : std_logic_vector(7 downto 0);      
      signal dataaes   : std_logic_vector(7 downto 0);
+     signal en_sbox   : std_logic_vector(31 downto 0);
      signal datasbox  : std_logic_vector(7 downto 0);
      signal gener_bits: std_logic_vector(7 downto 0);
      signal e : std_logic;
@@ -54,6 +56,7 @@ architecture sim of tb_top_ctrl_aes is
       out_write_req => writereq, 
       out_read_ack  => readack, 
       out_trigger   => trig,
+      out_en_sbox   => en_sbox,
       out_bits_sbox => gener_bits,
       out_data_aes  => data_out
                 
@@ -160,17 +163,17 @@ architecture sim of tb_top_ctrl_aes is
       
       dataaes <= "00000000";   --begin , but the cmd 000 is for setting lsb
       wait for 1000 ns;
-      dataaes <= "11111010";   --cmd for enable sbox, the 3 bits from the end
+      dataaes <= "01011111";   --cmd for enable sbox, the 3 bits from the beginning
       wait for 2000 ns;
-      dataaes <= "11111000";   --cmd for set lsb
+      dataaes <= "00011111";   --cmd for set lsb
       wait for 2000 ns;
-      dataaes <= "11111001";  -- cmd for set msb
+      dataaes <= "10011111";  -- cmd for set msb
       wait for 2000 ns;
-      dataaes <= "10000011";  -- cmd for starting the measuring 011
+      dataaes <= "11011111";  -- cmd for starting the measuring 011
       wait for 2000 ns;
-      dataaes <= "10011010";   --cmd for enable sbox, the 3 bits from the end
+      dataaes <= "01010011";   --cmd for enable sbox, the 3 bits from the end
       wait for 2000 ns;
-      dataaes <= "00111001";  -- cmd for set msb
+      dataaes <= "10000111";  -- cmd for set msb
       wait for 2000 ns;
       --dataaes <= "10000011";  -- cmd for starting the measuring 011
       --wait for 2000 ns;
