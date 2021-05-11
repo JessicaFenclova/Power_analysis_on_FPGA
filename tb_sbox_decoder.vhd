@@ -14,7 +14,7 @@ architecture sim of tb_sbox_decoder is
         i_reset    : in std_logic;
         i_enable   : in std_logic;    
         i_param    : in std_logic_vector(4 downto 0);
-        o_en_sbox  : out std_logic_vector(30 downto 0) --32 optional sboxes, param 5 bits 2^5 -> 32   
+        o_en_sbox  : out std_logic_vector(31 downto 0) --32 optional sboxes, param 5 bits 2^5 -> 32   
     );
     
  end component;
@@ -23,7 +23,7 @@ architecture sim of tb_sbox_decoder is
      signal reset      : std_logic;
      signal enable     : std_logic;      
      signal param      : std_logic_vector(4 downto 0);
-     signal en_sbox    : std_logic_vector(30 downto 0);
+     signal en_sbox    : std_logic_vector(31 downto 0);
      signal e : std_logic;
 
     
@@ -66,7 +66,7 @@ architecture sim of tb_sbox_decoder is
       enable<='0';
       wait for 100 ns;
       enable<= '1';
-      wait for 2000 ns;
+      wait for 2800 ns;
       enable<='0';
       wait;
  end process; 
@@ -85,6 +85,14 @@ architecture sim of tb_sbox_decoder is
       param<="00111";
       wait for 400 ns;
       param<="00101";
+      wait for 400 ns;
+      param<="01000";
+      wait for 400 ns;
+      param<="01001";
+      wait for 400 ns;
+      param<="01111";
+      wait for 400 ns;
+      param<="11111";
       
       e <= '1';
       wait;
