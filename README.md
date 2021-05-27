@@ -32,4 +32,9 @@ In addition scripts for simulation and conducting measurements are available. Fo
     - real_pow_mod.m
  
  
-The script for conductiong the experiment was designed in Python, experiment.py.
+The script for conductiong the experiment was designed in Matlab. 
+ 1. auto_experiments.m
+    - send_serial.m
+    - read_serial.m
+    - lfsr_generator.m
+    - xor_result.m
