@@ -62,29 +62,23 @@ architecture sim of tb_top_sbox_aes is
  process 
    begin    
       trig<='0';
-      wait for 80 ns;
+      wait for 200 ns;
       trig<='1';
-      wait for 80 ns;
+      wait for 100 ns;
       trig<='0';
-      wait for 80 ns;
+      wait for 800 ns;
       trig<='1';
-      wait for 80 ns;
+      wait for 100 ns;
       trig<='0';
-      wait for 80 ns;
+      wait for 1800 ns;
       trig<='1';
-      wait for 80 ns;
+      wait for 100 ns;
       trig<='0';
-      wait for 180 ns;
+      wait for 1800 ns;
       trig<='1';
-      wait for 180 ns;
+      wait for 100 ns;
       trig<='0';
-      wait for 280 ns;
-      trig<='1';
-      wait for 280 ns;
-      trig<='0';
-      wait for 340 ns;
-      trig<='1';
-      wait for 340 ns;    
+          
     
        wait;
            
@@ -93,29 +87,27 @@ architecture sim of tb_top_sbox_aes is
  process 
    begin    
       en<='0';
-      wait for 80 ns;
-      en<='1';
-      wait for 80 ns;
-      en<='0';
-      wait for 40 ns;
-      en<='1';
-      wait for 40 ns; 
-      en<='0';
       wait for 100 ns;
       en<='1';
+      wait for 80 ns;
+      en<='0';
+      wait for 400 ns;
+      en<='1';
+      wait for 100 ns; 
+      en<='0';
+      wait for 1400 ns;
+      en<='1';
       wait for 100 ns;
       en<='0';
-      wait for 140 ns;
+      wait for 2140 ns;
       en<='1';
       wait for 140 ns;
       en<='0';
-      wait for 240 ns;
+      wait for 2140 ns;
       en<='1';
-      wait for 240 ns;
+      wait for 140 ns;
       en<='0';
-      wait for 300 ns;
-      en<='1';
-      wait for 300 ns;   
+         
     
        wait;
            

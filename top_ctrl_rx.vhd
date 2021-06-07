@@ -10,7 +10,8 @@ use ieee.numeric_std.all;
          in_rd_ack   : in std_logic;
          in_data     : in std_logic;
          out_data    : out std_logic_vector(7 downto 0);
-         out_rd_req  : out std_logic
+         out_rd_req  : out std_logic;
+         out_cnt     : out std_logic_vector(3 downto 0) --for testing
          --out_error   : out std_logic
   
        );
@@ -30,7 +31,8 @@ architecture rtl of top_ctrl_rx is
           --i_stop      : in std_logic;
           i_data      : in std_logic;
           o_data      : out std_logic_vector(7 downto 0);
-          o_rd_req    : out std_logic
+          o_rd_req    : out std_logic;
+          o_cnt       : out std_logic_vector(3 downto 0)
           --o_error     : out std_logic
           --o_cnt      : out std_logic_vector(3 downto 0)
          );
@@ -120,7 +122,8 @@ architecture rtl of top_ctrl_rx is
      --i_stop     => cnt_done,
      i_data     => in_data,
      o_data     => dataout,
-     o_rd_req   => out_rd_req
+     o_rd_req   => out_rd_req,
+     o_cnt      => out_cnt
      --o_error    => out_error
     );
   

@@ -4,7 +4,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
  entity top_cpa is
-  generic (num_sbox : integer range 1 to 32 := 1);       -- default value is 1 sbox
+  generic (num_sbox : integer range 1 to 32 := 2);       -- default value is 2 sboxes
   port (
          i_cloc    : in std_logic;
          i_res     : in std_logic;

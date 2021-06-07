@@ -20,7 +20,7 @@ use ieee.numeric_std.all;
 architecture rtl of reg_after is  
   
 --CONSTANT jedna: STD_LOGIC := '1';
- 
+ --signal in_data: std_logic_vector(7 downto 0):="11111111"; 
 
  begin 
 
@@ -33,10 +33,10 @@ architecture rtl of reg_after is
     --END LOOP;
  
      elsif (in_CLK'event and in_CLK ='1') then
+       --in_data<= in_IN;
        if (in_ENABLE='1') then
           out_Q <= in_IN;
-       else
-          --do I want all ones or zeros
+       
        end if;
       --FOR i IN 0 TO 7 LOOP
      --output_Q(i) <= input_IN(i);

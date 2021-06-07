@@ -7,7 +7,7 @@ use ieee.numeric_std.all;
 
   entity xor_sbox is
     generic (
-             groups : integer range 2 to 255    -- groups value given by num of sboxes
+             groups : integer range 1 to 32 :=2   -- groups value given by num of sboxes, default value set to 2
             );
     port (
         input_byte  : in std_logic_vector((8*groups)-1 downto 0);
@@ -30,7 +30,7 @@ use ieee.numeric_std.all;
       --arr_sig <= (others => (others => '0');
     --end if; 
      pr_xor: process(input_byte)
-        variable result : std_logic_vector(7 downto 0);
+        variable result : std_logic_vector(7 downto 0);              --or use a signal
       begin
         result:= input_byte(7 downto 0);
         for i in 2 to groups loop

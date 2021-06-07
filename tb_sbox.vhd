@@ -30,7 +30,7 @@ architecture sim of tb_sbox is
      
      process 
    begin
-      input <= x"01";    --x"7c"
+      input <= "00000001";  --x"01";    --x"7c"
       wait for 1100 ns;
       input <= x"03";   --x"7b"
       wait for 2120 ns;

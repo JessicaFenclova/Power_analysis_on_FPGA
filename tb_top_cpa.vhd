@@ -68,46 +68,86 @@ architecture sim of tb_top_cpa is
  
       e <= '0';
       datain <= '1';   --begin
-      wait for 18620 ns;
+      wait for 34400 ns;
       datain <= '0';   --0
-      wait for 17400 ns; 
+      wait for 34400 ns; 
       datain <= '1';    --1
-      wait for 17400 ns;
+      wait for 34400 ns;
       datain <= '1';    --2
-      wait for 17400 ns;
+      wait for 34400 ns;
       datain <= '1';    --3
-      wait for 17400 ns;
+      wait for 34400 ns;
       datain <= '1';    --4
-      wait for 17400 ns;
+      wait for 34400 ns;
       datain <= '1';    --5
-      wait for 17400 ns;
+      wait for 34400 ns;
       datain <= '1';     --6
-      wait for 17400 ns;
+      wait for 34400 ns;
       datain <= '0';     --7
-      wait for 17400 ns;
+      wait for 34400 ns;
       datain<= '0';     --8
-      wait for 17400 ns;
+      wait for 34400 ns;
       datain <= '1';     --9
-      wait for 52400 ns;
+      wait for 74400 ns;
       datain <= '0';   --0
-      wait for 17400 ns; 
+      wait for 34400 ns; 
       datain <= '1';    --1
-      wait for 17400 ns;
+      wait for 34400 ns;
       datain <= '1';    --2
-      wait for 17400 ns;
+      wait for 34400 ns;
       datain <= '0';    --3
-      wait for 17400 ns;
+      wait for 34400 ns;
       datain <= '0';    --4
-      wait for 17400 ns;
+      wait for 34400 ns;
       datain <= '1';    --5
-      wait for 17400 ns;
+      wait for 34400 ns;
       datain <= '1';     --6
-      wait for 17400 ns;
+      wait for 34400 ns;
       datain <= '0';     --7
-      wait for 17400 ns;
+      wait for 34400 ns;
       datain <= '0';     --8
-      wait for 17400 ns;
-      datain <= '1';     --9 
+      wait for 34400 ns;
+      datain <= '1';     --9
+      wait for 72400 ns;
+      datain <= '0';   --0    -----------------    sbox
+      wait for 34400 ns; 
+      datain <= '1';    --1
+      wait for 34400 ns;
+      datain <= '1';    --2
+      wait for 34400 ns;
+      datain <= '0';    --3
+      wait for 34400 ns;
+      datain <= '1';    --4
+      wait for 34400 ns;
+      datain <= '1';    --5
+      wait for 34400 ns;
+      datain <= '0';     --6
+      wait for 34400 ns;
+      datain <= '1';     --7
+      wait for 34400 ns;
+      datain <= '0';     --8
+      wait for 34400 ns;
+      datain <= '1';     --9
+      wait for 108400 ns;
+      datain <= '0';   --0    -----------------   measure
+      wait for 34400 ns; 
+      datain <= '1';    --1
+      wait for 34400 ns;
+      datain <= '1';    --2
+      wait for 34400 ns;
+      datain <= '0';    --3
+      wait for 34400 ns;
+      datain <= '1';    --4
+      wait for 34400 ns;
+      datain <= '1';    --5
+      wait for 34400 ns;
+      datain <= '0';     --6
+      wait for 34400 ns;
+      datain <= '1';     --7
+      wait for 34400 ns;
+      datain <= '1';     --8
+      wait for 34400 ns;
+      datain <= '1';     --9  
       wait for 6 ms; 
     
       e <= '1';

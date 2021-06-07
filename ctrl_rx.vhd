@@ -13,9 +13,9 @@ use ieee.numeric_std.all;
     --i_stop      : in std_logic;
     i_data      : in std_logic;
     o_data      : out std_logic_vector(7 downto 0);
-    o_rd_req    : out std_logic
+    o_rd_req    : out std_logic;
     --o_error     : out std_logic
-    --o_cnt       : out std_logic_vector(3 downto 0) -- only for checking
+    o_cnt       : out std_logic_vector(3 downto 0) -- only for checking
     --o_cnt_slow      : out std_logic_vector(3 downto 0) -- only for checking    
   
     );
@@ -80,6 +80,7 @@ use ieee.numeric_std.all;
                     end if;
                     --count<=0;                 
                 end if;
+                
                 if (i_rd_ack='1') then
                    o_rd_req<= '0'; 
                    --o_error <='0';
@@ -89,7 +90,8 @@ use ieee.numeric_std.all;
                 end if;                 
                 --o_data<= in_d;         -- this causes the data to be sent out even though we dont have all of the in data            
             end if;
-           end if;            
+           end if;
+           o_cnt<=std_logic_vector(to_unsigned(count, o_cnt'length));            
         end if;
     end process p_rx;
     

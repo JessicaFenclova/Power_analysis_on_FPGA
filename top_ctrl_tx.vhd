@@ -42,7 +42,7 @@ architecture rtl of top_ctrl_tx is
         (
          i_clkin     : in std_logic;
          i_res       : in std_logic;
-         i_start_clk : in std_logic;
+         i_en : in std_logic;
          --i_stop_clk  : in std_logic;
          o_clkout    : out std_logic
        );
@@ -84,9 +84,9 @@ architecture rtl of top_ctrl_tx is
     (
        i_clkin     => in_clock,
        i_res       =>in_reset,
-       i_start_clk => start_ack,
+       i_en        => start_ack,
        --i_stop_clk  => stop,
-       o_clkout   => clk2    
+       o_clkout    => clk2    
      );
      
      out_data_tx <= datatx;

@@ -11,8 +11,6 @@ use ieee.numeric_std.all;
     i_wr_req   : in std_logic;
     i_data_tx  : in std_logic_vector(7 downto 0);
     o_wr_ack   : out std_logic;
-    --o_start_tx : out std_logic;   -- the same as wr_ack, so one of them will suffice
-    --o_stop_tx  : out std_logic;
     o_data_tx  : out std_logic    
   
     );
@@ -21,7 +19,6 @@ use ieee.numeric_std.all;
  architecture rtl of ctrl_tx is
  
     signal shift_reg: std_logic_vector(9 downto 0):="0000000000";
-    --signal stop: std_logic :='0';
     signal proc_data: std_logic :='0'; -- flag if data is being processed 
      
      

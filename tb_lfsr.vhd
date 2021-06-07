@@ -99,7 +99,7 @@ architecture sim of tb_lfsr is
       gener_data<='0';
       wait for 2000 ns;
       gener_data<= '1';
-      wait for 400 ns;
+      wait for 40 ns;
       gener_data<='0';
       wait;
  end process;  

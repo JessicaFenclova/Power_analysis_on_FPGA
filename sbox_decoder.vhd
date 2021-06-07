@@ -23,7 +23,7 @@ use ieee.numeric_std.all;
    p_decoder : process(i_clock, i_reset)
     begin
         if i_reset = '0' then
-           o_en_sbox<="00000000000000000000000000000000";           --or one sbox
+           o_en_sbox<="00000000000000000000000000000001";           --one sbox or none
            
         elsif i_clock'event and (i_clock='1') then
             
